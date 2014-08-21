@@ -10,61 +10,75 @@ namespace SharpBgfx {
     }
 
     public enum VertexAttribute {
-        Position,
-        Normal,
-        Tangent,
-        Color0,
-        Color1,
-        Indices,
-        Weight,
-        TexCoord0,
-        TexCoord1,
-        TexCoord2,
-        TexCoord3,
-        TexCoord4,
-        TexCoord5,
-        TexCoord6,
-        TexCoord7
+		Position,  // a_position
+		Normal,    // a_normal
+		Tangent,   // a_tangent
+		Bitangent, // a_bitangent
+		Color0,    // a_color0
+		Color1,    // a_color1
+		Indices,   // a_indices
+		Weight,    // a_weight
+		TexCoord0, // a_texcoord0
+		TexCoord1, // a_texcoord1
+		TexCoord2, // a_texcoord2
+		TexCoord3, // a_texcoord3
+		TexCoord4, // a_texcoord4
+		TexCoord5, // a_texcoord5
+		TexCoord6, // a_texcoord6
+		TexCoord7, // a_texcoord7
     }
 
     public enum VertexAttributeType {
         UInt8,
         Int16,
-        Half,
+        Half, // Availability depends on: BGFX_CAPS_VERTEX_ATTRIB_HALF.
         Float
     }
 
     public enum TextureFormat {
-        BC1,
-        BC2,
-        BC3,
-        BC4,
-        BC5,
-        ETC1,
-        ETC2,
-        ETC2A,
-        ETC2A1,
-        PTC12,
-        PTC14,
-        PTC12A,
-        PTC14A,
-        PTC22,
-        PTC24,
 
-        Unknown,
+        BC1,    // DXT1
+        BC2,    // DXT3
+        BC3,    // DXT5
+        BC4,    // LATC1/ATI1
+        BC5,    // LATC2/ATI2
+        BC6H,   // BC6H
+        BC7,    // BC7
+        ETC1,   // ETC1 RGB8
+        ETC2,   // ETC2 RGB8
+        ETC2A,  // ETC2 RGBA8
+        ETC2A1, // ETC2 RGB8A1
+        PTC12,  // PVRTC1 RGB 2BPP
+        PTC14,  // PVRTC1 RGB 4BPP
+        PTC12A, // PVRTC1 RGBA 2BPP
+        PTC14A, // PVRTC1 RGBA 4BPP
+        PTC22,  // PVRTC2 RGBA 2BPP
+        PTC24,  // PVRTC2 RGBA 4BPP
 
+        Unknown, // compressed formats above
+
+        R1,
         R8,
         R16,
         R16F,
+        R32,
+        R32F,
+        RG8,
+        RG16,
+        RG16F,
+        RG32,
+        RG32F,
         BGRA8,
         RGBA16,
         RGBA16F,
+        RGBA32,
+        RGBA32F,
         R5G6B5,
         RGBA4,
         RGB5A1,
         RGB10A2,
 
-        UnknownDepth,
+        UnknownDepth, // depth formats below
 
         D16,
         D24,
@@ -73,12 +87,14 @@ namespace SharpBgfx {
         D16F,
         D24F,
         D32F,
-        D0S8
+        D0S8,
     }
 
     public enum UniformType {
         Int,
         Float,
+        End,
+
         Int1Array,
         Float1Array,
         Float2Array,
