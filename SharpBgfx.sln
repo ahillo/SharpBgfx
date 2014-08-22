@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBgfx", "SharpBgfx\SharpBgfx.csproj", "{4DE918D2-89AB-433D-9F22-BE0407FF0E59}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4D382D22-1187-40BC-A20A-3C523B5F65AE} = {4D382D22-1187-40BC-A20A-3C523B5F65AE}

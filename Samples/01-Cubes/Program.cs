@@ -6,11 +6,11 @@ using SlimMath;
 static class Program {
     static void Main () {
         // create a UI thread and kick off a separate render thread
-        var sample = new Sample("Cubes", 1280, 720);
+        var sample = new SampleSDL2("Cubes", 1280, 720);
         sample.Run(RenderThread);
     }
 
-    static unsafe void RenderThread (Sample sample) {
+    static unsafe void RenderThread (SampleSDL2 sample) {
         // initialize the renderer
         Bgfx.Init(RendererType.OpenGL, IntPtr.Zero, IntPtr.Zero);
         Bgfx.Reset(sample.WindowWidth, sample.WindowHeight, ResetFlags.Vsync);
@@ -34,7 +34,8 @@ static class Program {
         clock.Start();
 
         // main loop
-        while (sample.ProcessEvents(ResetFlags.Vsync)) {
+        while (sample.ProcessEvents(ResetFlags.Vsync))
+        {
             // set view 0 viewport
             Bgfx.SetViewRect(0, 0, 0, (ushort)sample.WindowWidth, (ushort)sample.WindowHeight);
 
