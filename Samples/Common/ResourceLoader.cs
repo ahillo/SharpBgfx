@@ -66,9 +66,8 @@ namespace Common {
             else
             {
                 mem = MemoryBuffer.FromArray(File.ReadAllBytes(path));
+                return Bgfx.CreateTexture(mem, TextureFlags.None, 0);
             }
-
-            return Bgfx.CreateTexture(mem, TextureFlags.None, 0);
         }
 
         public static Mesh LoadMesh (string fileName) {
