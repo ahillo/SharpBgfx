@@ -143,6 +143,15 @@ namespace SharpBgfx {
         [DllImport(DllName, EntryPoint = "bgfx_destroy_texture", CallingConvention = CallingConvention.Cdecl)]
         public static extern void DestroyTexture (TextureHandle handle);
 
+        [DllImport(DllName, EntryPoint = "bgfx_set_texture", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetTexture(byte stage, UniformHandle sampler, TextureHandle handle, uint flags);
+
+        //[DllImport(DllName, EntryPoint = "bgfx_set_texture_from_frame_buffer", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern void SetTextureFromFrameBuffer(byte stage, UniformHandle sampler, FrameBufferHandle handle, byte attachment, uint flags);
+
+        [DllImport(DllName, EntryPoint = "bgfx_create_texture_2d", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern TextureHandle CreateTexture2D_Internal(ushort width, ushort height, byte numMips, TextureFormat format, TextureFlags flags, GraphicsMemory* memory);
+
         // **** wrapper methods for convenience ****
 
         public static string GetRendererName (RendererType rendererType) {
@@ -168,9 +177,14 @@ namespace SharpBgfx {
             return CreateShader(memory.Native);
         }
 
-        public static TextureHandle CreateTexture (MemoryBuffer memory, TextureFlags flags, byte skip) {
+        public static TextureHandle CreateTexture(MemoryBuffer memory, TextureFlags flags, byte skip) {
             TextureInfo info;
             return CreateTexture(memory.Native, flags, skip, out info);
+        }
+
+        public static TextureHandle CreateTexture2D(ushort width, ushort height, byte numMips, TextureFormat format, TextureFlags flags, MemoryBuffer memory)
+        {
+            return CreateTexture2D_Internal(width, height, numMips, format, flags, memory.Native);
         }
 
         // **** methods below are internal, since they're exposed by a wrapper to make them more convenient for .NET callers ****
@@ -179,7 +193,7 @@ namespace SharpBgfx {
         internal static extern GraphicsMemory* Alloc (int size);
 
         [DllImport(DllName, EntryPoint = "bgfx_copy", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern GraphicsMemory* Copy (IntPtr data, int size);
+        internal static extern GraphicsMemory* Copy(IntPtr data, int size);
 
         [DllImport(DllName, EntryPoint = "bgfx_get_renderer_name", CallingConvention = CallingConvention.Cdecl)]
         static extern sbyte* GetRendererNameInternal (RendererType rendererType);

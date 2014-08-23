@@ -37,6 +37,15 @@ namespace SharpBgfx {
             return new MemoryBuffer(memoryHandle);
         }
 
+        public static MemoryBuffer FromPtr(IntPtr ptr, int length_bytes)
+        {
+            if (ptr == IntPtr.Zero)
+                throw new ArgumentNullException("ptr");
+
+            var memoryHandle = Bgfx.Copy(ptr, length_bytes);
+            return new MemoryBuffer(memoryHandle);
+        }
+
         /// <summary>
         /// Writes a value into the buffer.
         /// </summary>

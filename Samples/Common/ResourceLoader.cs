@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System;
+using System.Runtime.InteropServices;
 using SharpBgfx;
 
 namespace Common {
@@ -35,7 +39,35 @@ namespace Common {
 
         public static TextureHandle LoadTexture (string name) {
             var path = Path.Combine("Assets/textures/", name);
-            var mem = MemoryBuffer.FromArray(File.ReadAllBytes(path));
+
+            MemoryBuffer mem;
+            var ext = Path.GetExtension(path);
+            if (ext == ".png" || ext == ".jpg" || ext == ".bmp")
+            {
+                using (var bmp = new Bitmap(path))
+                {
+                    Bitmap clone = null;
+                    if (bmp.PixelFormat != PixelFormat.Format32bppArgb)
+                        clone = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppArgb);
+
+                    var locked_bmp = clone ?? bmp;
+                    var bmpdata = locked_bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, locked_bmp.PixelFormat);
+                    int numbytes = bmp.Width * bmp.Height * 4;
+
+                    mem = MemoryBuffer.FromPtr(bmpdata.Scan0, numbytes);
+                    locked_bmp.UnlockBits(bmpdata);
+
+                    if (clone != null)
+                        clone.Dispose();
+
+                    return Bgfx.CreateTexture2D((ushort)bmp.Width, (ushort)bmp.Height, 0, TextureFormat.BGRA8, TextureFlags.None, mem);
+                }
+            }
+            else
+            {
+                mem = MemoryBuffer.FromArray(File.ReadAllBytes(path));
+            }
+
             return Bgfx.CreateTexture(mem, TextureFlags.None, 0);
         }
 

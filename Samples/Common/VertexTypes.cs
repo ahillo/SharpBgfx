@@ -4,17 +4,51 @@ using System.Linq;
 using System.Text;
 using SharpBgfx;
 
-namespace Common {
-    public struct PosColorVertex {
+namespace Common
+{
+    public struct PosColorVertex
+    {
         float x;
         float y;
         float z;
         uint abgr;
 
-        public PosColorVertex (float x, float y, float z, uint abgr) {
+        public PosColorVertex(float x, float y, float z, uint abgr)
+        {
             this.x = x;
             this.y = y;
             this.z = z;
+            this.abgr = abgr;
+        }
+
+        public static VertexDecl Decl;
+
+        public static void Init()
+        {
+            Decl = new VertexDecl();
+            Bgfx.VertexDeclBegin(ref Decl, RendererType.Null);
+            Bgfx.VertexDeclAdd(ref Decl, VertexAttribute.Position, 3, VertexAttributeType.Float, false, false);
+            Bgfx.VertexDeclAdd(ref Decl, VertexAttribute.Color0, 4, VertexAttributeType.UInt8, true, false);
+            Bgfx.VertexDeclEnd(ref Decl);
+        }
+    }
+
+    public struct PosColorTexcoordVertex 
+    {
+        float x;
+        float y;
+        float z;
+        float u;
+        float v;
+        uint abgr;
+
+        public PosColorTexcoordVertex(float x, float y, float z, float u, float v, uint abgr) 
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.u = u;
+            this.v = v;
             this.abgr = abgr;
         }
 
@@ -24,6 +58,7 @@ namespace Common {
             Decl = new VertexDecl();
             Bgfx.VertexDeclBegin(ref Decl, RendererType.Null);
             Bgfx.VertexDeclAdd(ref Decl, VertexAttribute.Position, 3, VertexAttributeType.Float, false, false);
+            Bgfx.VertexDeclAdd(ref Decl, VertexAttribute.TexCoord0, 2, VertexAttributeType.Float, false, false);
             Bgfx.VertexDeclAdd(ref Decl, VertexAttribute.Color0, 4, VertexAttributeType.UInt8, true, false);
             Bgfx.VertexDeclEnd(ref Decl);
         }
