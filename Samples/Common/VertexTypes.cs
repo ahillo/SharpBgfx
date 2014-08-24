@@ -35,8 +35,8 @@ namespace Common
 
     public struct PosColorTexcoordVertex 
     {
-        float x;
-        float y;
+        public float x;
+        public float y;
         float z;
         float u;
         float v;

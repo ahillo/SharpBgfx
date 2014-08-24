@@ -127,7 +127,7 @@ namespace SharpBgfx {
 
         [DllImport(DllName, EntryPoint = "bgfx_set_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetVertexBuffer (VertexBufferHandle handle, int startVertex, int count);
-
+        
         [DllImport(DllName, EntryPoint = "bgfx_set_state", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetRenderState (RenderState state, uint rgba);
 
@@ -151,6 +151,84 @@ namespace SharpBgfx {
 
         [DllImport(DllName, EntryPoint = "bgfx_create_texture_2d", CallingConvention = CallingConvention.Cdecl)]
         internal static extern TextureHandle CreateTexture2D_Internal(ushort width, ushort height, byte numMips, TextureFormat format, TextureFlags flags, GraphicsMemory* memory);
+
+        //===============================================================================================================
+
+        #region transient buffers
+
+        public static void AllocTransientIndexBuffer(ref TransientIndexBuffer buffer, uint size)
+        {
+            AllocTransientIndexBuffer_(ref buffer, size);
+        }
+
+        public static void AllocTransientVertexBuffer(ref TransientVertexBuffer buffer, uint size, ref VertexDecl decl)
+        {
+            AllocTransientVertexBuffer_(ref buffer, size, ref decl);
+        }
+        
+        [DllImport(DllName, EntryPoint = "bgfx_alloc_transient_index_buffer", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void AllocTransientIndexBuffer_(ref TransientIndexBuffer buffer, uint size);
+        
+        [DllImport(DllName, EntryPoint = "bgfx_alloc_transient_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void AllocTransientVertexBuffer_(ref TransientVertexBuffer buffer, uint size, ref VertexDecl decl);
+        
+        [DllImport(DllName, EntryPoint = "bgfx_set_transient_index_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetTransientIndexBuffer(ref TransientIndexBuffer tib, uint firstIndex, uint numIndices);
+
+        [DllImport(DllName, EntryPoint = "bgfx_set_transient_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetTransientVertexBuffer(ref TransientVertexBuffer tvb, uint startVertex, uint numVertices);
+    
+        // TODO: destroy
+        #endregion
+
+        #region instance data buffers
+
+        [DllImport(DllName, EntryPoint = "bgfx_set_instance_data_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetInstanceDataBuffer(ref InstanceDataBuffer idb, ushort num);
+
+        // TOTO: create, update
+
+        #endregion
+
+        #region dynamic buffers
+
+        public static IndexBufferHandle CreateDynamicIndexBuffer(MemoryBuffer memory)
+        {
+            return CreateDynamicIndexBuffer(memory.Native);
+        }
+
+        public static void UpdateDynamicIndexBuffer(IndexBufferHandle handle, MemoryBuffer memory)
+        {
+            UpdateDynamicIndexBuffer(handle, memory.Native);
+        }
+
+        public static VertexBufferHandle CreateDynamicVertexBuffer(MemoryBuffer memory, VertexDecl decl)
+        {
+            return CreateDynamicVertexBuffer(memory.Native, ref decl);
+        }
+
+        public static void UpdateDynamicVertexBuffer(VertexBufferHandle handle, MemoryBuffer memory)
+        {
+            UpdateDynamicVertexBuffer(handle, memory.Native);
+        }
+
+
+        [DllImport(DllName, EntryPoint = "bgfx_create_dynamic_index_buffer_mem", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IndexBufferHandle CreateDynamicIndexBuffer(GraphicsMemory* memory);
+
+        [DllImport(DllName, EntryPoint = "bgfx_update_dynamic_index_buffer", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void UpdateDynamicIndexBuffer(IndexBufferHandle handle, GraphicsMemory* memory);
+
+        [DllImport(DllName, EntryPoint = "bgfx_destroy_dynamic_index_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void DestroyDynamicIndexBuffer(IndexBufferHandle handle);
+
+        [DllImport(DllName, EntryPoint = "bgfx_create_dynamic_vertex_buffer_mem", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern VertexBufferHandle CreateDynamicVertexBuffer(GraphicsMemory* memory, ref VertexDecl decl);
+
+        [DllImport(DllName, EntryPoint = "bgfx_update_dynamic_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void UpdateDynamicVertexBuffer(VertexBufferHandle handle, GraphicsMemory* memory);
+
+        #endregion
 
         // **** wrapper methods for convenience ****
 

@@ -2,15 +2,20 @@
 using Common;
 using SharpBgfx;
 using SlimMath;
+using System.Runtime.InteropServices;
+
 
 static class Program {
     static void Main () {
         // create a UI thread and kick off a separate render thread
         var sample = new SampleSDL2("Cubes", 1280, 720);
-        sample.Run(RenderThread);
+        //sample.Run(RenderThread);
+
+        RenderThread(sample);
     }
 
-    static unsafe void RenderThread (SampleSDL2 sample) {
+    static unsafe void RenderThread (SampleSDL2 sample)
+    {
         // initialize the renderer
         Bgfx.Init(RendererType.OpenGL, IntPtr.Zero, IntPtr.Zero);
         Bgfx.Reset(sample.WindowWidth, sample.WindowHeight, ResetFlags.Vsync);
@@ -23,8 +28,11 @@ static class Program {
 
         // create vertex and index buffers
         PosColorTexcoordVertex.Init();
-        var vbh = Bgfx.CreateVertexBuffer(MemoryBuffer.FromArray(cubeVertices), PosColorTexcoordVertex.Decl);
-        var ibh = Bgfx.CreateIndexBuffer(MemoryBuffer.FromArray(cubeIndices));
+        TransientIndexBuffer ibh = new TransientIndexBuffer();
+        TransientVertexBuffer vbh = new TransientVertexBuffer();
+
+        // var vbh = Bgfx.CreateVertexBuffer(MemoryBuffer.FromArray(cubeVertices), PosColorTexcoordVertex.Decl);
+        // var ibh = Bgfx.CreateIndexBuffer(MemoryBuffer.FromArray(cubeIndices));
 
         // load shaders
         var program = ResourceLoader.LoadProgram("vs_cubes_textured", "fs_cubes_textured");
@@ -36,23 +44,27 @@ static class Program {
         var clock = new Clock();
         clock.Start();
 
+        // view transforms
+
+        // dummy draw call to make sure view 0 is cleared if no other draw calls are submitted
+        Bgfx.Submit(0, 0);
+
+
+        var elapsed = clock.Frame();
+        var time = clock.TotalTime();
+
         // main loop
-        while (sample.ProcessEvents(ResetFlags.Vsync))
+        while (sample.CheckEvents() &&  sample.ProcessEvents(ResetFlags.Vsync))
         {
             // set view 0 viewport
             Bgfx.SetViewRect(0, 0, 0, (ushort)sample.WindowWidth, (ushort)sample.WindowHeight);
 
-            // view transforms
             var viewMatrix = Matrix.LookAtLH(new Vector3(0.0f, 0.0f, -35.0f), Vector3.Zero, Vector3.UnitY);
             var projMatrix = Matrix.PerspectiveFovLH((float)Math.PI / 3, (float)sample.WindowWidth / sample.WindowHeight, 0.1f, 100.0f);
             Bgfx.SetViewTransform(0, &viewMatrix.M11, &projMatrix.M11);
-
-            // dummy draw call to make sure view 0 is cleared if no other draw calls are submitted
-            Bgfx.Submit(0, 0);
-
             // tick the clock
-            var elapsed = clock.Frame();
-            var time = clock.TotalTime();
+            elapsed = clock.Frame();
+            time = clock.TotalTime();
 
             // write some debug text
             Bgfx.DebugTextClear(0, false);
@@ -60,21 +72,38 @@ static class Program {
             Bgfx.DebugTextWrite(0, 2, 0x6f, "Description: Rendering simple textured static mesh.");
             Bgfx.DebugTextWrite(0, 3, 0x6f, string.Format("Frame: {0:F3} ms", elapsed * 1000));
 
+            if (elapsed * 1000 > 10)
+                Bgfx.DebugTextWrite(0, 4, 0x6f, "FUCK");
+
             // set pipeline states
             Bgfx.SetProgram(program);
             Bgfx.SetTexture(0, u_texture, texture, uint.MaxValue);
 
+            Bgfx.AllocTransientIndexBuffer(ref ibh, 65536);
+            Bgfx.AllocTransientVertexBuffer(ref vbh, 65536, ref PosColorTexcoordVertex.Decl);
+
+            cubeVertices[0].x += elapsed * 10;
+
+            ibh.SetData(cubeIndices, 0, cubeIndices.Length);
+            vbh.SetData(cubeVertices, 0, cubeVertices.Length);
+
+            Random rand = new Random();
             // submit 11x11 cubes
             for (int y = 0; y < 11; y++) {
                 for (int x = 0; x < 11; x++) {
                     // model matrix
-                    var transform = Matrix.RotationYawPitchRoll(time + x * 0.21f, time + y * 0.37f, 0.0f);
+                    var transform = Matrix.Identity;//.RotationYawPitchRoll(time + x * 0.21f, time + y * 0.37f, 0.0f);
                     transform.TranslationVector = new Vector3(-15.0f + x * 3.0f, -15.0f + y * 3.0f, 0.0f);
+                    
                     Bgfx.SetTransform(&transform.M11, 1);
 
-                    Bgfx.SetVertexBuffer(vbh, 0, -1);
-                    Bgfx.SetIndexBuffer(ibh, 0, -1);
+                    //for(int i=0; i<cubeVertices.Length; i++)
+                    //    cubeVertices[i].x += 0.02f;// (float)(rand.NextDouble() - 0.5f) - 1f;
+                    //cubeVertices[rand.Next(0, cubeVertices.Length - 1)].y += 1.01f;// (float)(rand.NextDouble() - 0.5f);
                     Bgfx.SetRenderState(RenderState.Default, 0);
+
+                    Bgfx.SetTransientIndexBuffer(ref ibh, 0, (uint)cubeIndices.Length);
+                    Bgfx.SetTransientVertexBuffer(ref vbh, 0, (uint)cubeVertices.Length);
 
                     // submit primitives
                     Bgfx.Submit(0, 0);
@@ -87,8 +116,8 @@ static class Program {
         }
 
         // clean up
-        Bgfx.DestroyIndexBuffer(ibh);
-        Bgfx.DestroyVertexBuffer(vbh);
+        //Bgfx.DestroyIndexBuffer(ibh);
+        //Bgfx.DestroyVertexBuffer(vbh);
         Bgfx.DestroyProgram(program);
         Bgfx.Shutdown();
     }

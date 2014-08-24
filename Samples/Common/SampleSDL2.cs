@@ -45,19 +45,35 @@ namespace Common {
             var thread = new Thread(() => renderThread(this));
             thread.Start();
 
-            while (true)
-            {   
-                SDL.SDL_Event evt;
-                SDL.SDL_WaitEvent(out evt);
+            SDL.SDL_Event evt;
 
+            CheckEvents();
+
+            thread.Join();
+        }
+
+        public bool CheckEvents()
+        {
+            SDL.SDL_Event evt;
+
+            while (SDL.SDL_PollEvent(out evt) == 1)
+            {
                 if (evt.type == SDL.SDL_EventType.SDL_QUIT)
                 {
                     eventQueue.Post(new Event(EventType.Exit));
                     break;
                 }
+
+                if (evt.type == SDL.SDL_EventType.SDL_WINDOWEVENT)
+                {
+                    if (evt.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED)
+                        eventQueue.Post(new SizeEvent(evt.window.data1, evt.window.data2));
+                    else if (evt.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
+                        eventQueue.Post(new SizeEvent(evt.window.data1, evt.window.data2));
+                }
             }
 
-            thread.Join();
+            return true;
         }
 
         public bool ProcessEvents (ResetFlags resetFlags) 
