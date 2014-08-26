@@ -113,7 +113,7 @@ namespace SharpBgfx
 
     public unsafe struct VertexDecl
     {
-        const int MaxAttribCount = 15;
+        const int MaxAttribCount = 16;
 
         public static readonly int SizeInBytes = Marshal.SizeOf(typeof(VertexDecl));
 

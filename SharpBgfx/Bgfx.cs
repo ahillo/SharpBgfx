@@ -75,7 +75,7 @@ namespace SharpBgfx {
         public static extern void SetViewClearMask (int viewMask, ClearFlags flags, int rgba, float depth, byte stencil);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_seq", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetViewSequential (byte id, bool enabled);
+        public static extern void BgfxSetViewSeq(byte id, bool enabled);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_seq_mask", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetViewSequentialMask (int viewMask, bool enabled);
@@ -126,7 +126,10 @@ namespace SharpBgfx {
         public static extern void SetIndexBuffer (IndexBufferHandle handle, int firstIndex, int count);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetVertexBuffer (VertexBufferHandle handle, int startVertex, int count);
+        public static extern void SetVertexBuffer(VertexBufferHandle handle, int firstIndex, int count);
+
+        [DllImport(DllName, EntryPoint = "bgfx_set_dynamic_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetDynamicVertexBuffer(VertexBufferHandle handle, int count);
         
         [DllImport(DllName, EntryPoint = "bgfx_set_state", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetRenderState (RenderState state, uint rgba);
@@ -179,6 +182,7 @@ namespace SharpBgfx {
         public static extern void SetTransientVertexBuffer(ref TransientVertexBuffer tvb, uint startVertex, uint numVertices);
     
         // TODO: destroy
+
         #endregion
 
         #region instance data buffers

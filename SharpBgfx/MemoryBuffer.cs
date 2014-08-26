@@ -31,7 +31,9 @@ namespace SharpBgfx {
                 throw new ArgumentNullException("array");
 
             var gcHandle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            var memoryHandle = Bgfx.Copy(gcHandle.AddrOfPinnedObject(), Marshal.SizeOf(typeof(T)) * array.Length);
+            var size_t = Marshal.SizeOf(typeof(T));
+            int size = size_t * array.Length;
+            var memoryHandle = Bgfx.Copy(gcHandle.AddrOfPinnedObject(), size);
 
             gcHandle.Free();
             return new MemoryBuffer(memoryHandle);
