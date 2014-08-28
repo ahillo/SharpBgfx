@@ -69,13 +69,13 @@ namespace SharpBgfx {
         public static extern void SetViewScissorMask (int viewMask, ushort x, ushort y, ushort width, ushort height);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_clear", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetViewClear (byte id, ClearFlags flags, int rgba, float depth, byte stencil);
+        public static extern void SetViewClear (byte id, ClearFlags flags, uint rgba, float depth, byte stencil);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_clear_mask", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetViewClearMask (int viewMask, ClearFlags flags, int rgba, float depth, byte stencil);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_seq", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void BgfxSetViewSeq(byte id, bool enabled);
+        public static extern void SetViewSeq(byte id, bool enabled);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_view_seq_mask", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetViewSequentialMask (int viewMask, bool enabled);
