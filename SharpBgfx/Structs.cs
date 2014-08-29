@@ -76,11 +76,11 @@ namespace SharpBgfx
 
         public bool SetData<T>(T[] data, int start_index, int count) where T : struct
         {
-            if (count > size)
-                return false;
-
             int size_t = GetSize<T>();
             var num_bytes = size_t * count;
+
+            if (num_bytes > size)
+                return false;
 
             IntPtr ptr = new IntPtr(this.data);
             WriteArray(ptr, data, start_index, num_bytes);

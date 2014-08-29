@@ -159,28 +159,21 @@ namespace SharpBgfx {
 
         #region transient buffers
 
-        public static void AllocTransientIndexBuffer(ref TransientIndexBuffer buffer, uint size)
-        {
-            AllocTransientIndexBuffer_(ref buffer, size);
-        }
-
-        public static void AllocTransientVertexBuffer(ref TransientVertexBuffer buffer, uint size, ref VertexDecl decl)
-        {
-            AllocTransientVertexBuffer_(ref buffer, size, ref decl);
-        }
-        
         [DllImport(DllName, EntryPoint = "bgfx_alloc_transient_index_buffer", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void AllocTransientIndexBuffer_(ref TransientIndexBuffer buffer, uint size);
+        public static extern void AllocTransientIndexBuffer(ref TransientIndexBuffer buffer, uint size);
         
         [DllImport(DllName, EntryPoint = "bgfx_alloc_transient_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void AllocTransientVertexBuffer_(ref TransientVertexBuffer buffer, uint size, ref VertexDecl decl);
+        public static extern void AllocTransientVertexBuffer(ref TransientVertexBuffer buffer, uint size, ref VertexDecl decl);
         
         [DllImport(DllName, EntryPoint = "bgfx_set_transient_index_buffer", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetTransientIndexBuffer(ref TransientIndexBuffer tib, uint firstIndex, uint numIndices);
 
         [DllImport(DllName, EntryPoint = "bgfx_set_transient_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetTransientVertexBuffer(ref TransientVertexBuffer tvb, uint startVertex, uint numVertices);
-    
+        public static extern void SetTransientVertexBuffer(ref TransientVertexBuffer tvb, uint startVertice, uint numVertices);
+
+        [DllImport(DllName, EntryPoint = "bgfx_check_avail_transient_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool CheckAvailTransientVertexBuffer(uint num, ref VertexDecl decl);
+
         // TODO: destroy
 
         #endregion
